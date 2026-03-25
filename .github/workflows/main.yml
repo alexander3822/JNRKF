@@ -31,20 +31,11 @@ jobs:
 
       - name: Create RDP User with Static Password
         run: |
-          # Use a fixed password from GitHub Secrets
-          $password = "${{ secrets.RDP_PASSWORD }}"
-
-          if ([string]::IsNullOrEmpty($password)) {
-              Write-Error "RDP_PASSWORD secret is not set. Please add it to your repository secrets."
-              exit 1
-          }
-
+          $password = "Pacman@123"
           $securePass = ConvertTo-SecureString $password -AsPlainText -Force
           New-LocalUser -Name "RDP" -Password $securePass -AccountNeverExpires
           Add-LocalGroupMember -Group "Administrators" -Member "RDP"
           Add-LocalGroupMember -Group "Remote Desktop Users" -Member "RDP"
-
-          echo "RDP_CREDS=User: RDP | Password: [STORED IN SECRETS]" >> $env:GITHUB_ENV
 
           if (-not (Get-LocalUser -Name "RDP")) {
               Write-Error "User creation failed"
@@ -97,7 +88,7 @@ jobs:
           Write-Host "`n=== RDP ACCESS ==="
           Write-Host "Address: $env:TAILSCALE_IP"
           Write-Host "Username: RDP"
-          Write-Host "Password: [Check your RDP_PASSWORD secret]"
+          Write-Host "Password: Pacman@123"
           Write-Host "==================`n"
 
           # Keep runner active indefinitely (or until manually cancelled)
